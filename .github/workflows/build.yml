@@ -1,0 +1,33 @@
+name: Build znver4 Optimized Kernel
+
+on:
+  workflow_dispatch:
+    inputs:
+      title:
+        description: 'Version'
+        required: true
+
+run-name: ${{ inputs.title }}
+
+jobs:
+  pkgbuild:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Clone linux-cachyos and Patch
+      run: |
+        git clone https://github.com/CachyOS/linux-cachyos.git
+        cd linux-cachyos
+        curl -sL https://raw.githubusercontent.com/RikkaNekoo/linux-cachyos-patch/refs/heads/main/linux-cachyos.patch | patch -p1
+
+    - name: Run makepkg
+      id: makepkg
+      uses: edlanglois/pkgbuild-action@v1.1.9
+      with:
+        pkgdir: "./linux-cachyos/linux-cachyos"
+        makepkgArgs: "-s --skipchecksum --noconfirm"
+
+    - name: Upload Package Archive
+      uses: actions/upload-artifact@v4
+      with:
+        path: ${{ steps.makepkg.outputs.pkgfile0 }}
+
