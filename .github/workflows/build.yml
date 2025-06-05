@@ -18,6 +18,7 @@ jobs:
         git clone https://github.com/CachyOS/linux-cachyos.git
         cd linux-cachyos
         curl -sL https://raw.githubusercontent.com/RikkaNekoo/linux-cachyos-patch/refs/heads/main/linux-cachyos.patch | patch -p1
+        rm linux-cachyos/.SRCINFO
 
     - name: Run makepkg
       id: makepkg
